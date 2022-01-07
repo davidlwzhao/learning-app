@@ -47,7 +47,7 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
         }
-        
+        .navigationViewStyle(.stack)
     }
 }
 

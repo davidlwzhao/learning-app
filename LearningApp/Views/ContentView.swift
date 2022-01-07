@@ -20,29 +20,21 @@ struct ContentView: View {
                     let lessons = model.currentModule!.content.lessons
                     
                     ForEach(0..<lessons.count, id: \.self) { i in
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 5)
-                                .aspectRatio(CGSize(width: 335, height: 80), contentMode: .fit)
-                            
-                            HStack(spacing: 30){
-                                Text("\(i+1)")
-                                    //.padding(.horizontal, 25)
-                                VStack(alignment: .leading){
-                                    Text(lessons[i].title)
-                                        .bold()
-                                    Text("Video - \(lessons[i].duration) minutes")
-                                        .font(Font.system(size: 10))
-                                }
-                                Spacer()
-                            }
-                        }
-                        .padding(.horizontal, 5)
+                        
+                        NavigationLink(
+                            destination:
+                                ContentDetailView()
+                                    .onAppear(perform: {
+                                        model.beginLesson(i)
+                                    }),
+                            label: {
+                                ContentRowView(i: i)
+                            })
+                        
                     }
                 }
             }
+            .accentColor(.black)
             .navigationBarTitle("Learn  \(model.currentModule?.category ?? "")")
             .padding()
         }
@@ -51,8 +43,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        var model = ContentModel()
-        model.beginModule(1)
+        let model = ContentModel(1)
         
         ContentView()
             .environmentObject(model)

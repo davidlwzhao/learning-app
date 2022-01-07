@@ -15,8 +15,16 @@ class ContentModel: ObservableObject {
     @Published var currentModule:Module?
     var currentModuleIndex = 0
     
+    @Published var currentLesson:Lesson?
+    var currentLessonIndex = 0
+    
     init() {
         self.getLocalData()
+    }
+    
+    init(_ moduleId:Int) {
+        self.getLocalData()
+        self.beginModule(moduleId)
     }
     
     func beginModule(_ moduleId:Int) {
@@ -28,6 +36,34 @@ class ContentModel: ObservableObject {
         }
         self.currentModule = self.modules[self.currentModuleIndex]
     }
+    
+    func beginLesson(_ lessonId:Int) {
+        if lessonId < self.currentModule!.content.lessons.count {
+            self.currentLessonIndex = lessonId
+        } else {
+            self.currentLessonIndex = 0
+        }
+        
+        self.currentLesson = self.currentModule!.content.lessons[self.currentLessonIndex]
+    }
+    
+    func hasNextLesson() -> Bool {
+        return (self.currentLessonIndex + 1 < self.currentModule!.content.lessons.count)
+    }
+    
+    func toNextLesson() {
+        self.currentLessonIndex += 1
+        
+        // if there is a new lesson update pointers else reset to nil
+        if self.currentLessonIndex < self.currentModule!.content.lessons.count {
+            self.currentLesson = self.currentModule!.content.lessons[self.currentLessonIndex]
+        } else {
+            self.currentLesson = nil
+            self.currentLessonIndex = 0
+        }
+    }
+    
+    // MARK: - Data Functions
     
     func getLocalData() {
         
